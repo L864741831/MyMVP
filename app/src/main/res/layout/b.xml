@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/test_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:textSize="25sp"
+        tools:ignore="OnClick" />
+
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.liweidong.mymvp.widget.EasyRecyclerView
+                android:id="@+id/easy_recy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:listDirection="Staggered_VERTICAL"
+                app:listNum="3"
+                app:emptyText="数据为空"
+                app:isShowEmptyText="true"
+                >
+
+            </com.liweidong.mymvp.widget.EasyRecyclerView>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</LinearLayout>

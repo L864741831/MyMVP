@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 持续时间 中等的 -->
+    <!-- 转化 dialog进场y轴从100%到0% -->
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromYDelta="100%p"
+        android:toYDelta="0%p" />
+
+    <!--透明度 dialog进场透明度从0到1 -->
+    <alpha
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+</set>

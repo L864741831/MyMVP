@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="EasyRecyclerView">
+        <attr name="listDirection">
+            <!-- 线性竖直 -->
+            <enum name="Linear_VERTICAL" value="0"/>
+            <!-- 线性水平 -->
+            <enum name="Linear_HORIZONTAL" value="1"/>
+            <!-- 网格竖直 -->
+            <enum name="Grid_VERTICAL" value="2"/>
+            <!-- 网格水平 -->
+            <enum name="Grid_HORIZONTAL" value="3"/>
+            <!-- 交错的竖直 -->
+            <enum name="Staggered_VERTICAL" value="4"/>
+            <!-- 交错的水平 -->
+            <enum name="Staggered_HORIZONTAL" value="5"/>
+        </attr>
+        <!-- 网格或瀑布流每行/列数量 -->
+        <attr name="listNum" format="integer" />
+
+        <!--为空提示语第一次是否显示-->
+        <attr name="isFirstShowEmptyText" format="boolean" />
+        <!--为空提示语是否显示-->
+        <attr name="isShowEmptyText" format="boolean" />
+        <!--列表为空提示语-->
+        <attr name="emptyText" format="string" />
+
+    </declare-styleable>
+
+</resources>

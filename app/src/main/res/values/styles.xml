@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>    <!-- 主题色 -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>    <!-- 暗主题色 -->
+        <item name="colorAccent">@color/colorAccent</item>    <!-- 强调 -->
+    </style>
+
+    <!-- DialogFragment样式 -->
+    <style name="dialog_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>    <!-- 边框 设置无边框再给DialogFragment设置shape背景可以圆角-->
+        <item name="android:windowIsFloating">true</item>    <!-- 浮动的 -->
+        <item name="android:windowIsTranslucent">true</item>    <!-- 半透明的 -->
+        <item name="android:windowNoTitle">true</item>    <!-- 无标题 -->
+        <item name="android:windowBackground">@android:color/transparent</item>    <!-- 背景色 设置透明-->
+    </style>
+
+    <!--  DialogFragment进入退出动画 -->
+    <style name="dialogAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_push_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_push_out</item>
+    </style>
+
+</resources>

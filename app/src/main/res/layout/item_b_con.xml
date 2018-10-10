@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--
+    线性布局和网格布局的recyclerview一般在item布局中直接写好宽高或填充后相距上下或左右多少距离
+
+    交错的(瀑布流布局)需要在item中(纵向)指定高度(横向)指定宽度，
+    或者在adapter的onBindViewHolder方法中获得二级布局的LayoutParams，动态指定宽高(可以从后台获取宽或高或产生随机宽或高)
+    随机产生高度(因为高度不确定，会导致出现空白问题)
+    -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!-- 高度一定要设置，也可以动态设置，不然网络和瀑布流图片网格布局只显示在一列 -->
+        <ImageView
+            android:id="@+id/iv_girl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"></ImageView>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+
