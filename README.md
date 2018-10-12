@@ -1,5 +1,4 @@
-
-MVP + RxJava2 + Retrofit2 + Dagger2  + Room + Glide 框架
+MVP + RxJava2 + Retrofit2 + Dagger2  + Room + Glide 开发框架
 
 
 一、参考项目
