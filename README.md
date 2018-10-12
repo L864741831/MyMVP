@@ -28,7 +28,7 @@ https://www.jianshu.com/nb/14302692
 牛晓伟的dagger2
 https://www.jianshu.com/u/2ce7b74b592b
 
-CSDN作者 启航 自定义控件三部曲
+CSDN作者 启舰 自定义控件三部曲
 https://blog.csdn.net/harvic880925/article/details/50995268
 
 二、搭建前提
