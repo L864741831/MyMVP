@@ -1,97 +1,277 @@
-一、参考项目
+## Android架构组件Room介绍与使用
+### 关于Room
 
-极客日报，一款纯粹的阅读App，基于Material Design + MVP + RxJava + Retrofit + Dagger2 + Realm + Glide
-https://www.jianshu.com/p/bca054f5131d
-https://github.com/codeestX/GeekNews
+Room是Google官方提供的数据库ORM框架，使用起来非常方便。Room在SQLite上提供了一个抽象层，以便在利用SQLite的全部功能的同时能更加流畅的访问数据库。
 
-从零开始搭建一个主流项目框架（一）—简单的框架
-https://www.jianshu.com/p/4e0c7139649c
+Room中三个主要组件：
 
-从零开始搭建一个主流项目框架（二）—MVP+dagger2
-https://www.jianshu.com/p/2fa1329bc27e
+- Database：该组件用来创建一个database holder。注解定义实体的列表，类的内容定义从数据库中获取数据的对象（DAO）。它也是底层连接的主要入口。这个被注解的类是一个继承RoomDatabase的抽象类。在运行时，可以通过调用Room.databaseBuilder() 或者 Room.inMemoryDatabaseBuilder()来得到它的实例。
 
-主流项目框架（三）—RxJava2.0+Retrofit2.0+OkHttp+mvp+dagger2
-https://www.jianshu.com/p/8df3ef6599d3
+- Entity：该组件的一个示例表示数据库的一行数据，对于每个Entity类来说，都会有对应的table被创建。想要这些Entity被创建，就需要卸载上面的Database的注解参属entities列表中，默认Entity中的所有字段都会来创建表，除非该字段上加上@Ignore注解。
 
-微影，一款纯粹的在线视频App，基于Material Design + MVP + Dagger2 + RxJava + Retrofit + Realm + Glide
-https://www.jianshu.com/p/7ca24b3e8191
+- Dao：该组件用来表述具有Data Access Object(DAO)功能的类或者接口，DAO类时Room的重要组件，负责定义查询（添加或者删除等）数据库的方法。使用@Database注解的类中必须定义一个不带参数的抽象方法，这个方法返回使用@Dao注解的类，返回类型为@Dao注解过的类的抽象方法Room会在编译时生成这个类的实现。
 
+### 添加Room库的依赖
 
-简书作者:
+首先在Google的Maven存储库(项目最外层的build.gradle文件中添加如下：
 
-Carson_Ho的RxJava2和Retrofit2
-https://www.jianshu.com/nb/14302692
+```Java
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+}
+```
 
-牛晓伟的dagger2
-https://www.jianshu.com/u/2ce7b74b592b
+然后再app/build.gradle文件中添加相关依赖
 
-CSDN作者 启航 自定义控件三部曲
-https://blog.csdn.net/harvic880925/article/details/50995268
+```Java
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    // Room依赖
+    implementation 'android.arch.persistence.room:runtime:1.0.0'
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    ......
+}
+```
 
-二、搭建前提
+### 定义Entity
 
-Fragment之我的解决方案：Fragmentation(SupportActivity)
-https://www.jianshu.com/p/38f7994faa6b
+当一个类用 **@Entity** 注解并且被 **@Database** 注解中的 **entities** 属性所引用，Room就会在数据库中为这个被 **@Entity** 注解的类创建一张表。
 
-Java并发编程：synchronized
-https://www.cnblogs.com/dolphin0520/p/3923737.html
+##### PrimaryKey
 
-android开发时，finish(),android.os.Process.killProcess(android.os.Process.myPid());跟System.exit(0)
-https://blog.csdn.net/baijinglei12/article/details/52805137?locationNum=13
+每个Entity必须至少有一个主键(Primary Key)，即使只有一个属性，也要使用@PrimaryKey来注释这个属性。如果想让Room为Entity设置自增ID，需要设置@PrimaryKey的autoGenerate属性。
 
-Dagger2 @Qualifier
-https://www.jianshu.com/p/e521bd239cd9
+##### ColumnInfo
 
-Android RxJava ：图文详解 背压策略
-https://www.jianshu.com/p/ceb48ed8719d
+如果想要自定义表中的字段时，需要在属性上面加上 **@ColumnInfo** 注解，如：@ColumnInfo(name = "ID")，"ID"为自定义字段名。
 
-Android Butterknife使用方法总结
-https://www.jianshu.com/p/3678aafdabc7
+```Java
+@Entity(tableName = "PHONE")
+public class PhoneBean implements Parcelable {
 
-Android 框架之EventBus
-https://www.jianshu.com/p/54c635b3a33a
+    @PrimaryKey(autoGenerate = true) // 设置主键
+    @ColumnInfo(name = "ID") // 定义对应的数据库的字段名成
+    private int id;
 
-Glide入门教程
-https://www.jianshu.com/p/f5cc71c8eb3f
+    @ColumnInfo(name = "PHONE")
+    private String phone;
 
-关于RecyclerView
-https://www.jianshu.com/p/aff499a5953c
+    @ColumnInfo(name = "NAME")
+    private String name;
 
-NestedScrollView嵌套RecyclerView
-https://www.cnblogs.com/fuyaozhishang/p/8232378.html
+    @ColumnInfo(name = "DATE")
+    private Date date;
 
-ViewPager防止Fragment销毁以及取消Fragment的预加载
-https://blog.csdn.net/mr_liabill/article/details/48749807
+    public PhoneBean(String phone, String name, Date date) {
+        this.phone = phone;
+        this.name = name;
+        this.date = date;
+    }
 
-//smart刷新加载框架
-https://github.com/scwang90/SmartRefreshLayout
+    public int getId() {
+        return id;
+    }
 
-//Android中Serializable和Parcelable序列化对象详解
-https://www.cnblogs.com/yezhennan/p/5527506.html
+    public void setId(int id) {
+        this.id = id;
+    }
 
-Android 解决 adapter.notifyDataSetChanged() 不起作用
-https://blog.csdn.net/like_program/article/details/52517119
+    public String getPhone() {
+        return phone;
+    }
 
-Android Room 使用以及配合 RxJava
-https://www.jianshu.com/p/72eeaded8913
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-Android自定义控件三部曲文章索引
-https://blog.csdn.net/harvic880925/article/details/50995268
+    public String getName() {
+        return name;
+    }
 
-三、其他
+    public void setName(String name) {
+        this.name = name;
+    }
 
-项目里需要用到NDK开发,遇到了mips64el-linux-android-strip的问题
-https://www.jishux.com/p/e459da16b52c994d
+    public Date getDate(){
+        return date;
+    }
 
-Android Studio新建类头部注释和添加函数注释模板及快捷键
-https://blog.csdn.net/tuke_tuke/article/details/73277588
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-Android Studio怎么构建配置文件(config.gradle)
-https://blog.csdn.net/songdongpancsdn/article/details/79629568
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.phone);
+        dest.writeString(this.name);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+    }
 
-Android 消息处理机制（Looper、Handler、MessageQueue,Message）
-https://www.jianshu.com/p/02962454adf7
+    protected PhoneBean(Parcel in) {
+        this.id = in.readInt();
+        this.phone = in.readString();
+        this.name = in.readString();
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+    }
 
-一个demo让你彻底理解Android中触摸事件的分发
-http://www.cnblogs.com/absfree/p/5354511.html
+    public static final Parcelable.Creator<PhoneBean> CREATOR = new Parcelable.Creator<PhoneBean>() {
+        @Override
+        public PhoneBean createFromParcel(Parcel source) {
+            return new PhoneBean(source);
+        }
+
+        @Override
+        public PhoneBean[] newArray(int size) {
+            return new PhoneBean[size];
+        }
+    };
+}
+```
+
+### 转换
+##### TypeConverter
+
+使用@TypeConverter注解定义转换的方法，如下，将Date类型的数据转换成Long类型来存储。
+
+```Java
+public class ConversionFactory {
+
+    @TypeConverter
+    public static Long fromDateToLong(Date date) {
+        return date == null ? null : date.getTime();
+    }
+
+    @TypeConverter
+    public static Date fromLongToDate(Long value) {
+        return value == null ? null : new Date(value);
+    }
+}
+```
+
+如图，示例中将Date属性值转换为Long类型存储到数据库
+
+![Date类型转换为Long类型存储到数据库](https://github.com/mengjingbo/RoomSample/blob/master/image/1.png?raw=true)
+
+读取到数据库的Date属性值，再将Date属性值转换为字符串显示
+
+![Long类型转换为Date类型展示](https://github.com/mengjingbo/RoomSample/blob/master/image/2.png?raw=true)
+
+### 定义Dao
+
+Dao组件定义一系列的增删改查操作。其中 **Update** 和 **Detele** 操作是根据定义的主键进行。
+
+```Java
+@Dao
+public interface PhoneDao {
+
+    /**
+     * 查询所有
+     *
+     * @return
+     */
+    @Query("SELECT * FROM PHONE")
+    List<PhoneBean> getPhoneAll();
+
+    /**
+     * 根据指定字段查询
+     *
+     * @return
+     */
+    @Query("SELECT * FROM PHONE WHERE phone = :phone")
+    List<PhoneBean> loadPhoneByIds(String phone);
+
+    /**
+     * 项数据库添加数据
+     *
+     * @param phone
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<PhoneBean> phone);
+
+    /**
+     * 修改数据
+     *
+     * @param phone
+     */
+    @Update()
+    void update(PhoneBean phone);
+
+    /**
+     * 删除数据
+     *
+     * @param phoneBean
+     */
+    @Delete()
+    void delete(PhoneBean phoneBean);
+}
+```
+
+### 创建数据库
+
+```Java
+@Database(entities = {PhoneBean.class}, version = 1, exportSchema = false)
+@TypeConverters({ConversionFactory.class})
+public abstract class PhoneDatabase extends RoomDatabase {
+
+    public static PhoneDatabase getDefault(Context context) {
+        return buildDatabase(context);
+    }
+
+    private static PhoneDatabase buildDatabase(Context context) {
+        return Room.databaseBuilder(context.getApplicationContext(), PhoneDatabase.class, "PHONE.db")
+                .allowMainThreadQueries()
+                .build();
+    }
+
+    public abstract PhoneDao getPhoneDao();
+}
+```
+
+### 使用
+
+##### 增加
+
+```Java
+private void insertPhone(String mName, String mPhone) {
+    List<PhoneBean> mPhones = new ArrayList<>();
+    mPhones.add(new PhoneBean(mPhone, mName));
+    PhoneDatabase.getDefault(getApplicationContext()).getPhoneDao().insertAll(mPhones);
+}
+```
+
+##### 查询
+
+```Java
+private void queryPhone() {
+    List<PhoneBean> mPhoneLists = PhoneDatabase.getDefault(getApplicationContext()).getPhoneDao().getPhoneAll();
+    // 其他代码......
+}
+```
+
+##### 修改
+
+```Java
+private void updatePhone(String name, String phone) {
+    PhoneDatabase.getDefault(getActivity().getApplicationContext()).getPhoneDao().update(new PhoneBean(phone, name));
+    // ......
+}
+```
+
+##### 删除
+
+```Java
+private void deletePhone() {
+    PhoneDatabase.getDefault(getActivity().getApplicationContext()).getPhoneDao().delete(mPhoneBean);
+    // ......
+}
+```
